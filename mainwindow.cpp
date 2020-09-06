@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     readConfigToTable("sourseConfig.ini");
 
     connect(ui->saveBtn, SIGNAL(clicked()), this, SLOT(saveTable()));
+    connect(ui->viewBtn, SIGNAL(clicked()), this, SLOT(openSourseWindow()));
 }
 
 // 析构函数
@@ -22,7 +23,7 @@ MainWindow::~MainWindow()
 // 初始化表格
 void MainWindow::tableInit(void){
     //设置行数为10
-    ui->courseTable->setRowCount(11);
+    ui->courseTable->setRowCount(12);
     //设置列数为10
     ui->courseTable->setColumnCount(5);
 
@@ -33,7 +34,7 @@ void MainWindow::tableInit(void){
     ui->courseTable->setHorizontalHeaderLabels(rowTitles);
 
     QStringList colTitles;
-    rowTitles << "早读" << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9" << "10";
+    colTitles << "早读" << "1" << "2" << "3" << "4" << "5" << "中午" << "6" << "7" << "8" << "9" << "10";
     // 设置列标题
     ui->courseTable->setVerticalHeaderLabels(colTitles);
 
@@ -61,21 +62,23 @@ void MainWindow::addTableItem(int x, int y, QString text,
 // 读取课程表文件到表格中
 void MainWindow::readConfigToTable(QString filename){
     QFile file(filename);
-    if (!file.open(QFileDevice::ReadOnly))
+    if (!file.open(QFileDevice::ReadOnly | QIODevice::Text))
         return;
 
-    QTextStream(out);
-    for (int row = 0; row < 5; row++){
-        for (int col = 0; col < 10; col++){
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    for (int row = 0; row < 12; row++){
+        for (int col = 0; col < 5; col++){
             QString str;
             //读取空格就会结束
             out >> str;
-            qDebug() << str;
+            qDebug() << row << col;
             if (str == "#"){
                 addTableItem(row, col, "");
             }else{
                 addTableItem(row, col, str);
             }
+            ui->courseTable->item(row, col)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
         }
     }
 }
@@ -89,13 +92,15 @@ void MainWindow::saveTable(void){
         return;
 
     QTextStream out(&file);
-    for (int row = 0; row < 5; row++){
-        for (int col = 0; col < 10; col++){
+    out.setCodec("UTF-8");
+    for (int row = 0; row < 12; row++){
+        for (int col = 0; col < 5; col++){
             // 取出字符串并写入文件
-            if(ui->courseTable->item(row , col)==0){
+            qDebug() << row << col;
+            if(ui->courseTable->item(row, col)->text() == ""){
                 out << "#";
             }else{
-                out << QString(ui->courseTable->item(row, col)->text());
+                out << ui->courseTable->item(row, col)->text();
             }
             // 用空格分隔
             out << " ";
@@ -105,3 +110,57 @@ void MainWindow::saveTable(void){
     }
     file.close();
 }
+
+// 外部打开课程表
+void MainWindow::openSourseWindow(){
+    // 判断实例是否创建过
+    if (sourseWindow == NULL){
+        // 新创建一个实例
+        sourseWindow = new Sourse;
+        // 绑定当弹窗关闭的时候，弹出主窗口
+        connect(sourseWindow, SIGNAL(closed()), this, SLOT(openMenu()));
+        connect(this, SIGNAL(sendSourseList(QStringList, QString)),
+                sourseWindow, SLOT(courseArrive(QStringList, QString)));
+    }
+    // 展示弹窗
+    sourseWindow->show();
+    // 主窗口隐藏
+    this->hide();
+
+    // 获取当前日期
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    // 转换为‘周一’..的形式
+    QString current_week = current_date_time.toString("ddd");
+    // 判断要选取的列数
+    int col;
+    if (current_week == "周一"){
+        col = 0;
+    }else if (current_week == "周二"){
+        col = 1;
+    }else if (current_week == "周三"){
+        col = 2;
+    }else if (current_week == "周四"){
+        col = 3;
+    }else if (current_week == "周五"){
+        col = 4;
+    }else{
+        col = 0;
+    }
+    // 读取课程名称
+    QStringList courseList;
+    for (int row = 0; row < 12; row++){
+        courseList << ui->courseTable->item(row, col)->text();
+    }
+    // 给弹窗发送今日课程信息
+    emit sendSourseList(courseList, current_week);
+
+
+}
+
+// 当弹窗关闭时打开主菜单
+void MainWindow::openMenu(void){
+    this->show();
+    delete sourseWindow;
+    sourseWindow = NULL;
+}
+

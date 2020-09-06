@@ -8,6 +8,9 @@
 #include <QDebug>
 #include <QFile>
 #include <QString>
+#include <QCloseEvent>
+#include <QDateTime>
+#include "sourse.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -23,6 +26,8 @@ public:
     ~MainWindow();
 
 private:
+    Sourse *sourseWindow = NULL;
+
     Ui::MainWindow *ui;
     void tableInit(void);
     void addTableItem(int, int, QString, QColor, QColor);
@@ -30,6 +35,11 @@ private:
 
 private slots:
     void saveTable(void);
+    void openSourseWindow(void);
+    void openMenu(void);
+
+signals:
+    void sendSourseList(QStringList, QString);
 
 };
 #endif // MAINWINDOW_H

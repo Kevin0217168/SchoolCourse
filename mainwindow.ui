@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>782</width>
-    <height>594</height>
+    <width>692</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>课程表-主页</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -47,6 +47,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="viewBtn">
+        <property name="text">
+         <string>今日课程</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="saveBtn">
         <property name="text">
          <string>保存设置</string>
@@ -62,7 +69,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>782</width>
+     <width>692</width>
      <height>26</height>
     </rect>
    </property>

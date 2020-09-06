@@ -2,6 +2,13 @@
 #define SOURSE_H
 
 #include <QDialog>
+#include <QString>
+#include <QStringList>
+#include <QDebug>
+#include <QTimer>
+#include <QTime>
+#include <QFile>
+#include <QTextStream>
 
 namespace Ui {
 class Sourse;
@@ -17,6 +24,16 @@ public:
 
 private:
     Ui::Sourse *ui;
+    QList<QList<int>> courseTime;
+
+private slots:
+    void closeEvent(QCloseEvent *event);
+    void courseArrive(QStringList, QString);
+    void updateCourse(void);
+    void readTime();
+
+signals:
+    void closed(void);
 };
 
 #endif // SOURSE_H
