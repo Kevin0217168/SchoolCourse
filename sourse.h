@@ -25,6 +25,9 @@ public:
 private:
     Ui::Sourse *ui;
     QList<QList<int>> courseTime;
+    int COURSEFONTSIZE = 20;
+    int TITLEFONTSIZE = 20;
+    void readConifg();
 
 private slots:
     void closeEvent(QCloseEvent *event);

@@ -6,6 +6,7 @@ Sourse::Sourse(QWidget *parent) :
     ui(new Ui::Sourse)
 {
     ui->setupUi(this);
+    readConifg();
     readTime();
 
     QTimer *timer = new QTimer(this); //this 为parent类, 表示当前窗口
@@ -20,6 +21,20 @@ Sourse::~Sourse()
     delete ui;
 }
 
+void Sourse::readConifg(){
+    QFile file("dilagConfig.ini");
+
+    if (!file.open(QFileDevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+
+    out >> COURSEFONTSIZE;
+    out >> TITLEFONTSIZE;
+
+}
+
 
 void Sourse::closeEvent(QCloseEvent *event)
 {
@@ -28,8 +43,10 @@ void Sourse::closeEvent(QCloseEvent *event)
 
 // 接收课程信息
 void Sourse::courseArrive(QStringList sourseList, QString week){
-    ui->listWidget->setFont(QFont("微软雅黑", 20));
+    ui->listWidget->setFont(QFont("微软雅黑", COURSEFONTSIZE));
     ui->week_l->setText(week);
+    ui->week_l->setFont(QFont("微软雅黑", TITLEFONTSIZE));
+    ui->nowTime->setFont(QFont("微软雅黑", TITLEFONTSIZE));
     for (int i = 0; i < 12; i++){
         ui->listWidget->insertItem(i, tr(sourseList.at(i).toUtf8().data()));
         ui->listWidget->item(i)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
