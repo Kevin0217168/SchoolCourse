@@ -1,5 +1,5 @@
-#ifndef SOURSE_H
-#define SOURSE_H
+#ifndef COURSE_H
+#define COURSE_H
 
 #include <QDialog>
 #include <QString>
@@ -11,19 +11,19 @@
 #include <QTextStream>
 
 namespace Ui {
-class Sourse;
+class Course;
 }
 
-class Sourse : public QDialog
+class Course : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Sourse(QWidget *parent = nullptr);
-    ~Sourse();
+    explicit Course(QWidget *parent = nullptr);
+    ~Course();
 
 private:
-    Ui::Sourse *ui;
+    Ui::Course *ui;
     QList<QList<int>> courseTime;
     int COURSEFONTSIZE = 20;
     int TITLEFONTSIZE = 20;
@@ -39,4 +39,4 @@ signals:
     void closed(void);
 };
 
-#endif // SOURSE_H
+#endif // Course_H
