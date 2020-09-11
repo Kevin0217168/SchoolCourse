@@ -10,7 +10,8 @@
 #include <QString>
 #include <QCloseEvent>
 #include <QDateTime>
-#include "sourse.h"
+#include <QMessageBox>
+#include "course.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -26,7 +27,7 @@ public:
     ~MainWindow();
 
 private:
-    Sourse *sourseWindow = NULL;
+    Course *CourseWindow = NULL;
 
     Ui::MainWindow *ui;
     void tableInit(void);
@@ -35,11 +36,11 @@ private:
 
 private slots:
     void saveTable(void);
-    void openSourseWindow(void);
+    void openCourseWindow(void);
     void openMenu(void);
 
 signals:
-    void sendSourseList(QStringList, QString);
+    void sendCourseList(QStringList, QString);
 
 };
 #endif // MAINWINDOW_H

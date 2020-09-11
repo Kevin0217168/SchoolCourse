@@ -6,12 +6,15 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    // 表格初始化
     tableInit();
-    readConfigToTable("sourseConfig.ini");
+    // 读取课程数据到表格
+    readConfigToTable("CourseConfig.ini");
 
+    // 绑定保存配置按钮事件
     connect(ui->saveBtn, SIGNAL(clicked()), this, SLOT(saveTable()));
-    connect(ui->viewBtn, SIGNAL(clicked()), this, SLOT(openSourseWindow()));
+    // 绑定今日课程事件
+    connect(ui->viewBtn, SIGNAL(clicked()), this, SLOT(openCourseWindow()));
 }
 
 // 析构函数
@@ -61,12 +64,16 @@ void MainWindow::addTableItem(int x, int y, QString text,
 
 // 读取课程表文件到表格中
 void MainWindow::readConfigToTable(QString filename){
+    // 以只读模式打开配置文件
     QFile file(filename);
     if (!file.open(QFileDevice::ReadOnly | QIODevice::Text))
+        // 打开失败，弹出提示框
+        QMessageBox::critical(this, "崩溃！", "程序已无法运行！\n原因：读取课程配置失败\n文件名为：\""+filename+"\"");
         return;
 
     QTextStream out(&file);
     out.setCodec("UTF-8");
+
     for (int row = 0; row < 12; row++){
         for (int col = 0; col < 5; col++){
             QString str;
@@ -87,7 +94,7 @@ void MainWindow::readConfigToTable(QString filename){
 
 // 保存表格配置
 void MainWindow::saveTable(void){
-    QFile file("sourseConfig.ini");
+    QFile file("CourseConfig.ini");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
@@ -112,18 +119,18 @@ void MainWindow::saveTable(void){
 }
 
 // 外部打开课程表
-void MainWindow::openSourseWindow(){
+void MainWindow::openCourseWindow(){
     // 判断实例是否创建过
-    if (sourseWindow == NULL){
+    if (CourseWindow == NULL){
         // 新创建一个实例
-        sourseWindow = new Sourse;
+        CourseWindow = new Course;
         // 绑定当弹窗关闭的时候，弹出主窗口
-        connect(sourseWindow, SIGNAL(closed()), this, SLOT(openMenu()));
-        connect(this, SIGNAL(sendSourseList(QStringList, QString)),
-                sourseWindow, SLOT(courseArrive(QStringList, QString)));
+        connect(CourseWindow, SIGNAL(closed()), this, SLOT(openMenu()));
+        connect(this, SIGNAL(sendCourseList(QStringList, QString)),
+                CourseWindow, SLOT(courseArrive(QStringList, QString)));
     }
     // 展示弹窗
-    sourseWindow->show();
+    CourseWindow->show();
     // 主窗口隐藏
     this->hide();
 
@@ -152,15 +159,17 @@ void MainWindow::openSourseWindow(){
         courseList << ui->courseTable->item(row, col)->text();
     }
     // 给弹窗发送今日课程信息
-    emit sendSourseList(courseList, current_week);
-
+    emit sendCourseList(courseList, current_week);
 
 }
 
 // 当弹窗关闭时打开主菜单
 void MainWindow::openMenu(void){
+    // 展示主菜单
     this->show();
-    delete sourseWindow;
-    sourseWindow = NULL;
+    // 销毁今日课程窗口
+    delete CourseWindow;
+    // 指针置为NULL
+    CourseWindow = NULL;
 }
 
