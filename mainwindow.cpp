@@ -69,7 +69,7 @@ void MainWindow::readConfigToTable(QString filename){
     if (!file.open(QFileDevice::ReadOnly | QIODevice::Text))
         // 打开失败，弹出提示框
         QMessageBox::critical(this, "崩溃！", "程序已无法运行！\n原因：读取课程配置失败\n文件名为：\""+filename+"\"");
-        return;
+        this->close();
 
     QTextStream out(&file);
     out.setCodec("UTF-8");
@@ -79,7 +79,6 @@ void MainWindow::readConfigToTable(QString filename){
             QString str;
             //读取空格就会结束
             out >> str;
-            qDebug() << row << col;
             if (str == "#"){
                 addTableItem(row, col, "");
             }else{
@@ -103,7 +102,6 @@ void MainWindow::saveTable(void){
     for (int row = 0; row < 12; row++){
         for (int col = 0; col < 5; col++){
             // 取出字符串并写入文件
-            qDebug() << row << col;
             if(ui->courseTable->item(row, col)->text() == ""){
                 out << "#";
             }else{
