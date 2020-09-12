@@ -6,6 +6,8 @@ Course::Course(QWidget *parent) :
     ui(new Ui::Course)
 {
     ui->setupUi(this);
+    // 不在任务栏显示图标
+    setWindowFlags(Qt::Tool);
     // 读取今日课程配置
     readConifg();
     // 读取课程时间信息

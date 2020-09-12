@@ -1,7 +1,7 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+include (./qtsingleapplication/qtsingleapplication.pri)
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -22,11 +22,11 @@ SOURCES += \
 
 HEADERS += \
     course.h \
-    mainwindow.h \
+    mainwindow.h
 
 FORMS += \
     course.ui \
-    mainwindow.ui \
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
