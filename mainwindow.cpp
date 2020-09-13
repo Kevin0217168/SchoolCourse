@@ -14,7 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
     // 绑定保存配置按钮事件
     connect(ui->saveBtn, SIGNAL(clicked()), this, SLOT(saveTable()));
     // 绑定今日课程事件
-    connect(ui->viewBtn, SIGNAL(clicked()), this, SLOT(openCourseWindow()));
+    connect(ui->viewBtn, SIGNAL(clicked()), this, SLOT(openCourseWindow()));\
+    // 模仿点击，打开今日课程
+    ui->viewBtn->clicked();
+    // 主窗口隐藏
+//    this->hide();
 }
 
 // 析构函数
@@ -66,10 +70,11 @@ void MainWindow::addTableItem(int x, int y, QString text,
 void MainWindow::readConfigToTable(QString filename){
     // 以只读模式打开配置文件
     QFile file(filename);
-    if (!file.open(QFileDevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QFileDevice::ReadOnly | QIODevice::Text)){
         // 打开失败，弹出提示框
         QMessageBox::critical(this, "崩溃！", "程序已无法运行！\n原因：读取课程配置失败\n文件名为：\""+filename+"\"");
-        this->close();
+        exit(0);
+    }
 
     QTextStream out(&file);
     out.setCodec("UTF-8");

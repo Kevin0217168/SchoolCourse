@@ -41,8 +41,8 @@ void Course::initPos(){
     move(X, Y);
     // 设置窗口大小
     resize(WIDTH,HEIGHT);
+    setStyleSheet("background-color:white;");
 
-    setWindowOpacity(0.7);
 
 }
 
@@ -64,6 +64,10 @@ void Course::readConifg(){
     out >> COURSEFONTSIZE;
     // 第二行为标题字体大小
     out >> TITLEFONTSIZE;
+    float TOUMING;
+    // 第三行为透明度
+    out >> TOUMING;
+    setWindowOpacity(TOUMING);
 }
 
 
