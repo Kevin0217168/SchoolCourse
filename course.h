@@ -28,6 +28,7 @@ private:
     int COURSEFONTSIZE = 20;
     int TITLEFONTSIZE = 20;
     void readConifg();
+    void initPos();
 
 private slots:
     void closeEvent(QCloseEvent *event);

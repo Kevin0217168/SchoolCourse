@@ -6,8 +6,10 @@ Course::Course(QWidget *parent) :
     ui(new Ui::Course)
 {
     ui->setupUi(this);
+    initPos();
+
     // 不在任务栏显示图标
-    setWindowFlags(Qt::Tool);
+    setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
     // 读取今日课程配置
     readConifg();
     // 读取课程时间信息
@@ -18,6 +20,30 @@ Course::Course(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(updateCourse())); // SLOT填入一个槽函数
     // 每1秒更新一次时间
     timer->start(1000);
+}
+
+void Course::initPos(){
+    QFile file("CourseWindowConfig.ini");
+
+    if (!file.open(QFileDevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+
+    int X, Y, WIDTH, HEIGHT;
+    // 第一行为窗口位置
+    out >> X >> Y;
+    // 第二行为窗口大小
+    out >> WIDTH >> HEIGHT;
+
+    // 设置窗口位置
+    move(X, Y);
+    // 设置窗口大小
+    resize(WIDTH,HEIGHT);
+
+    setWindowOpacity(0.7);
+
 }
 
 Course::~Course()
@@ -38,12 +64,24 @@ void Course::readConifg(){
     out >> COURSEFONTSIZE;
     // 第二行为标题字体大小
     out >> TITLEFONTSIZE;
-
 }
 
 
 void Course::closeEvent(QCloseEvent *event)
 {
+    QFile file("CourseWindowConfig.ini");
+
+    if (!file.open(QFileDevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+
+    out << x() << " " << y() << "\n";
+    out << width() << " " << height() << "\n";
+
+    file.close();
+
     emit closed();
 }
 
